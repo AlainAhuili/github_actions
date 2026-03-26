@@ -1,0 +1,339 @@
+Git / Github
+Introduction to Git
+Git is the most popular version control system (_Version Control System_ or VCS). It was developed by Linus Torvalds in 2005, creator of the Linux kernel. It offers a very different type of version control, as it is a distributed version control system. With a distributed version control system, there is no centralized code base from which to pull code. You will see this in more detail with local and remote repositories (thanks to GitHub).
+
+But why do we need VCS? Mainly because VCS eases a lot of collaboration of different team members on the same project. It aids in making them more productive and quick! To guarantee that everyone has access to the most recent code and that updates are recorded, a version control system is essential.
+
+Other version control systems, such as SVN and CVS, rely on a centralized system, which means that only one master copy of the software is used. These systems, therefore, require network connectivity for any action, unlike git which will only use the network when updating between the local and remote repositories.
+
+It is a version manager that is used for both public and private projects. Initially, git is used to versioning code files (python, c, c++...), but it can also be used for any type of file (txt, md, csv...).
+
+The interest in versioning is to be able to go back if needed, and the ability to see who modified what, and at what time, which will bring better management of the project participants.
+
+First step
+Installation
+Git is installed by default in many Linux distributions. In particular, it is installed on your DataScientest virtual machine.
+
+If you want to install it on your personal computer, you can follow the instructions below.
+
+Linux (Debian / Ubuntu)
+To install git, simply use the apt package manager:
+
+sudo apt install git-all
+MacOS
+There are several ways to install Git on macOS.
+
+You can choose the way you want to install from the list on the official git website
+
+Windows
+Download the installation wizard from the official git website, run it, and follow the instructions.
+
+Initialization
+We are now going to see the main commands of git and we will go into the details of them as the course goes on.
+
+First of all, you need to create a working directory. Once this step is done, you just have to enter this directory and use the command git init to initialize the local repository.
+
+mkdir repo
+cd repo
+git init
+As a result of this command, git creates a hidden directory named .git. As a reminder, you can list all items (including hidden items) with the ls -a command. You can go into the directory and do an ls.
+
+ls -a
+cd .git
+ls
+This is where all the data related to the creation and modification of items in your working directory will be stored. Do not necessarily pay attention to what is in this directory, understand that it allows git to work properly.
+
+Adding documents
+When you create a file, for git to consider adding it to the repository you need to use the git add filename command.
+
+ 
+The add command can be used to add several documents at once, or even to take into account all the changes that have been made in the directory. This is possible by using the command "git add .".
+
+However, you should know that this is a practice to be avoided. Indeed, the aim is to keep a record of your additions/modifications. So that in case of need it will be easier in the future to understand what has been done in your directory.
+The sooner you get the hang of git, the better it will be for your future missions using git.
+
+Making a commit
+We mentioned earlier that you should keep track of your document additions/changes. To accomplish this task, following a git add, we need to make a _commit_, i.e. record the addition or modification of the document in the change history. We can add a message to our _commits_ to keep a commented trace of all the modifications. So we will make a commit with an interesting and relevant comment for users with the git command commit -m "the comment".
+
+Example of short and explicit comments
+
+git commit -m "addition of the file file_name"
+git commit -m "changing the function function_name"
+git commit -m "addition of the documentation"
+Deleting documents
+When you want to delete a file, to get git to consider deleting that file from the repository you need to use the git rm filename command. As with adding or modifying a document with git add, you'll also need to record the removal with a _commit_.
+
+git rm filename
+git commit -m "removing the file file_name"
+Knowing the status of your local repository
+At any time, it is possible to know the status of the repository: thanks to the git status command, git also guides us on the actions we have to do. This command is extremely important, and it is advisable to always do a git status before and after each command to see the evolution of our documents.
+
+When running git status, if nothing is to be done, we should have the following display.
+
+On branch master
+
+No commits yet
+
+nothing to commit (create/copy files and use "git add" to track)
+So we understand the information that will be provided to us, namely:
+
+Which branch we are on (a notion that will be seen later)
+Whether there are files to add
+Whether there are files to commit.
+Example
+We will now do an example to apply these basic commands before moving on to the advanced features of git. To do that, you have to be inside the repo directory.
+
+Create a doc.txt file in your directory
+
+Add text to this file (e.g. "My first file in my git directory")
+
+Observe the status of the repository
+
+Add doc.txt to the git
+
+Commit the addition with the message "added documentation file" Add doc.txt to the git
+
+touch doc.txt
+echo 'My first file in my folder git' >> doc.txt
+git status
+git add doc.txt
+git status
+git commit -m "added documentation file"
+git status
+You now know how to use the main git commands. Now we will look at the advanced features to manage version histories.
+
+Configuration
+You can observe the git configuration variables with the following command.
+
+git config --list
+This is where information about whether there is a remote repository or not is stored. You can also add information about the user. For example, during a commit, it is important to have the contact information (name, email) of the person who made the changes. You can change this information with the following command.
+
+git config --global user.name "Daniel"
+git config --global user.email "daniel@datascientest.com"
+Log
+Being able to observe logs is essential for a version management tool. It is a much-used feature, especially to know which user made which modification (and when). This allows you to manage the versions of the working directory, to have a real follow-up of the branches and the evolution of the files.
+
+Modify the doc.txt file then add and commit.
+
+echo 'new line' >> doc.txt
+git status
+git add doc.txt
+git status
+git commit -m "adding of lines"
+git status
+So now we are going to look at the logs ! Run the git log command and observe the output. First, you can see that between our two commits the author has changed because we changed the configuration. There are options in git log to have a more elegant output or additional information:
+
+--oneline: Each commit is represented on a line.
+--graph: Represents the output as a graph (useful when there are multiple branches).
+--name-status: Adds as information the type of action performed (A for an add, M for a change)
+There are many others. To go further you can read the documentation (man git-log command) to see all the options available, you can even combine these options! Here are some examples of the combined options.
+
+git log
+git log --oneline
+git log --oneline --graph
+git log --oneline --graph --name-status
+Difference between two commits
+During the development of an application, there may be an incident in production or in a file that you have created. In this kind of situation, we want to quickly see the differences between the version before and after to see the changes, for that we use the command git diff where we pass in parameter the numbers of the two commits to inspect.
+
+git diff commit1 commit2
+Observe the difference between your two commits. (- and + indicate line additions and deletions)
+
+Git Blame
+A nice feature of git is that you can display information about a document line by line, including the author, the date of the commit, and the change of state of the document. This can be done using git blame filename.
+
+Backtracking
+After observing the differences between the commits, you may want to revert to a previous version of the code in case of an incident. There are several ways to do this, the most commonly used being git revert and git reset.
+
+git revert
+
+The git revert command creates a new commit that undoes a previous commit, by applying the reverse transformation.
+
+For example, if the commit numbered 123 creates a new file file_1.txt, the git revert 123 commit will create a new commit that deletes the file file_1.txt.
+
+To revert a commit you must use the command :
+
+git revert last_commit_number
+You can also revert multiple commits by using git revert to undo a range of commits:
+
+git revert HEAD~2..HEAD # go back 2 commits
+Edit the file Add and commit
+
+This command will create two new commits, which cancel the last and second last commit respectively.
+
+git reset
+
+Unlike git revert, which creates new commits to undo past commits, git reset simply removes commits from the history.
+
+So, if the commit history is: commit1 -- commit2 -- commit3 -- commit4, to revert to the state of the second commit, you could use the following (equivalent) commands:
+
+
+git reset commit2 # revert to the state of commit2
+git reset commit2 # delete the last 2 commits
+The effect of these commands will be to delete the commit3 and commit4 commits. The history after this operation will be commit1 -- commit2.
+
+By comparison, if you had used the git revert HEAD~2..HEAD command, the new history would be commit1 -- commit2 -- commit3 -- commit4 -- commit5 -- commit6, with commit5 and commit6 having the effect of deleting commit4 and commit3 respectively.
+
+git reset --soft HEAD~1
+# The argument HEAD~1 specifies that we want to go back to the last commit
+# The current commit is designed by HEAD
+If you want to cancel the commit and any changes made during the commit, use the --hard argument :
+
+git reset --hard HEAD~1
+# The argument HEAD~1 specifies that we want to go back to the previous commit
+# The current commit is designated by HEAD
+If we want to reverse the previous commit without deleting the changes made locally in that commit, we use the --soft argument :
+
+git reset --soft HEAD~1
+
+Warning: The git reset --hard command is destructive: it permanently removes commits and local changes. It should never be used on commits already pushed to a shared remote repository. Prefer git revert when in doubt.
+Using git revert is considered "cleaner", as you keep track of all commits, and their deletions.
+
+Create more commits and apply these different functions.
+
+Branch
+Since the beginning of the course, we've been talking about branches, it's time to understand this essential feature when developing a project. When you create an application, it is always desirable to have a stable version of it, but what happens if you want to develop a new feature? Because you do not want to overwrite the stable version, or you do not want to have to do git revert all the time in case of an error. That's where the value of branches comes in.
+
+Theory
+
+By default, only one branch exists when the repository is initialized, the master branch (this has been renamed to the main branch on GitHub). The best practice is to leave the most stable version of your project on this branch.
+
+When developing new functionality you will need to create a new branch. Creating a new branch will allow us to work with the files in the current directory in the new branch. So you can develop your new feature on the new branch, without forgetting the good practices you have learned so far (git add, status, commit...). When you're happy with the work you've done on the branch, you can merge the new branch with the master branch.
+
+Practice
+Creating a branch
+To create a new branch, we run the following command from the current one:
+
+git branch branch-name
+To see what branches are available to you, you can simply do a git branch.
+
+Changing branches
+To move from branch to the branch we run the following command:
+
+git checkout branch-name
+Since Git 2.23, git switch branch-name is the recommended alternative for switching branches. git checkout still works but is considered legacy.
+Branch merge (_merge_)
+Finally, to merge two branches, for example, if you want to make changes from the source-branch branch to the master branch, you'll first need to go to the master branch with a git checkout and then use the git merge command:
+
+Exercise
+Create a new modif-doc branch
+
+Move into it
+
+Make changes to a document (e.g. via nano)
+
+Save these changes (add + commit)
+
+Make sure the changes are reflected in the branch (status + log)
+
+Go back to the master branch and check that the changes are not present
+
+Merge the two branches and check that the changes are now in master
+
+git branch modif-doc
+git branch # the asterisk indicates the current branch (i.e. where you are)
+git checkout modif-doc
+git branch
+nano doc.txt
+git status
+git add doc.txt
+git status
+git commit -m "modif doc.txt branch modif-doc"
+git status
+git log --oneline --graph --name-status
+cat doc.txt
+git checkout master
+git branch
+cat doc.txt
+git merge modif-doc
+cat doc.txt
+git log --oneline --graph --name-status
+In summary, branches allow better management of file versions. They also make it easier to work with several people (each person can work on a separate branch).
+Conflict management
+In any situation where more than one person is working on the same file, the work ends up overlapping. It also happens that two developers modify the same line of code in two different ways. In these cases, Git can't tell which version is correct, only one of the developers can decide.
+
+If this happens, a developer will see the following error during a git merge:
+
+Auto-merging [filename1]
+CONFLICT (content): Merge conflict in [filename1]
+Automatic merge failed; fix conflicts and then commit the result.
+Merge conflicts may take a minute or several days to resolve (if there are many files to fix). It is recommended, and good coding practice, to synchronize your code several times a day by committing, pushing, and merging regularly.
+
+Exercise
+We will now look at an example of a conflict and its resolution:
+
+Create a new folder conflicts.
+
+Enter the folder conflicts.
+
+Initialize the git repository
+
+Create a file merge.txt and insert the text " first line"
+
+Add and commit
+
+mkdir conflicts
+cd conflicts
+git init .
+echo "first line" > merge.txt
+git add merge.txt
+git commit -m "add merge.txt file"
+We now have a new repository with a master branch and a merge.txt file with the content.
+
+We will now create a branch or we will create a conflict.
+
+Create a new update-merge-file branch
+
+Edit the contents of the merge.txt file
+
+Add and commit
+
+git checkout -b update-merge-file
+echo "new version of first line" > merge.txt
+git add merge.txt
+git commit -am "updated merge.txt"
+Now go back to the master branch
+
+Add a second line to the merge.txt file
+
+Add and commit
+
+git checkout master
+echo "second line" >> merge.txt
+git add merge.txt
+git commit -am "added second line in merge.txt"
+Now that we have two different versions of the same file across two different branches, we will try to merge the two branches.
+
+Merge update-merge-file into master.
+
+git merge update-merge-file
+The following message should appear
+
+Auto-merging merge.txt
+CONFLICT (content): Merge conflict in merge.txt
+Automatic merge failed; fix conflicts and then commit the result.
+The message tells us that there is a conflict with the merge.txt file. A git status shows that the merge.txt file has been modified to resolve the conflict. We will now look at the contents of the file :
+
+cat merge.txt
+Now we can see some changes in the file :
+
+<<<<<<< HEAD
+=======
+>>>>>>> update-merge-file
+These lines are used to show the conflict and understand the difference between the two branches: All the content between the line <<<<<<< HEAD and ======= comes from the current branch that the HEAD ref points to (in this case master). And therefore, all content between ======= and >>>>>>> update-merge-file comes from the merge branch (update-merge-file).
+
+To fix the problem, only the developer knows which version to keep. So, the best way to solve this is to manually modify the files in question to keep the desired versions.
+
+Edit the file Add and commit
+
+Tag
+One last important concept to know when using git is the concept of _tag_. Tags are references to a particular point in the change history.
+
+A tag represents a particular _commit_, while a branch represents a succession of _commits_. Tags are used to indicate an important point in the change history, for example, _commits_ corresponding to deployed versions of the application (i.e. version x.y.z, for example, 1.0.1).
+
+To create a tag, simply run the git tag command followed by the tag name:
+
+Create a 1.0.0 tag
+
+git tag 1.0.0
+Conclusion
+In this module, we have seen the main commands to be able to realize a project with git. Be aware that git is a complex tool to learn. It is only by practicing that you will assimilate the notions seen here. We have not gone into the details of group work with git. This notion will be highlighted in the following notebooks, which will allow you to have a remote repository where several developers of the same project will be able to work collaboratively.

@@ -1,0 +1,347 @@
+Git / Github
+2. First steps on the platform
+Once the account has been created and Git installed, it is time to get down to business.
+
+a) Repositories
+Collaboration on GitHub is mainly done in terms of repositories. If you want to start a project and share it, you can either create your own repository, or participate in an ongoing project on an already existing repository. In both cases, you need to link a remote repository hosted on GitHub, and a local repository hosted on your machine.
+
+To create a new repository, simply click on the New button on the left sidebar of the home page, then name it and set it up as you wish.
+
+From the home page, create a new private repository with a name of your choice.
+
+Add a README.md file to it, which will serve as a description for your repository.
+
+Add a gitignore file, it is a list of files type which will be ignore when you push you repository online.
+
+Choose a License which tells to the contributors what they can do with your code.
+
+Your repository should now appear in the left sidebar. Access it by clicking on it.
+
+Some Keys words :
+
+clone : create an on-premise copy of a Github repository.
+add : add on stage files modified.
+commit : modification performed on the repo, that has been approved by the developer who publishes the branch.
+push : forwarding of a commit to the cloud.
+fetch : gathering last commits published on the branch locally.
+merge : merging of the commits between two branches.
+pull : fetch + merge on a remote repository.
+To link our remote repository and our machine, we will clone it on our machine. To do this, simply use the git clone function followed by the URL of our remote repository. You can get the corresponding URL by clicking on Code.
+
+
+The command to be performed locally will therefore be of the form :
+
+git clone https://github.com/UserName/my-repo.git
+You will surely be asked to identify yourself, you will then have to follow carefully the following steps to connect safely.
+b) Authentication
+If you want to clone or publish a repository on your GitHub, and this one is in private, you will have to authenticate yourself. In this part, we will explain the two methods of identification to access GitHub which are :
+
+HTTPS
+SSH
+Let's take a closer look at the differences between these two authentications.
+
+HTTPS
+It is possible to use HTTPS authentication to connect. To do so, you need to generate an access token. This method is simple and does not require you to go through the terminal.
+
+Go to your GitHub account
+
+On your profile, click on _Settings_ then _Developer settings_
+
+In the left menu, click on _Personal access tokens_
+
+Then click on _Generate new token_. Here you have to pass several parameters like the name of your token or the accesses for the token.
+
+After selecting the desired parameters, click on _Generate Token_.
+
+The generated token will be used as a password for the authentication.
+
+Now let's take the following example: we want to clone a private repository. When we go through the terminal, a username and a password will be asked. The password corresponds to the generated token.
+
+git clone https://URL_of_repo_to_clone
+>>> username : github_login
+>>> password : generated_token
+SSH
+You can also use SSH authentication to identify yourself. The advantage of this technique is that you only do it once and it will work all the time. The principle of this method is to generate a private and public SSH key. The public key will be known by GitHub. This will allow you to clone all the private repositories of your GitHub on your local computer. The private key will decrypt the repository. To do so, you just have to follow different steps.
+
+Generate an SSH key
+Open your terminal and enter the following lines of code:
+
+ssh-keygen -t ed25519 -C "your_email@example.com"
+It is possible that your system does not support the Ed25519 algorithm. In this case, use this :
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com"
+Click enter to accept the default location. Then click enter again to skip the passphrases. You should end up with a result like this:
+
+>>> Your identification has been saved in /home/user/.ssh/id_rsa
+Your public key has been saved in /home/user/.ssh/id_rsa.pub
+The key fingerprint is:
+SHA579:cA+brd09N767+blsdnyOLZLXgsfbmagYY/OWOPyZT9MPQLcI votre_email@exemple.com
+The key randomart image is:
++---[RSA 4096]----+
+|    ...          |
+|   .   .         |
+|    .o.o.o . .   |
+|   ...=o= E o .  |
+|    o..=SB * .   |
+|   . o..= + =    |
+|    . o o*.. o   |
+|     . o=.**. .  |
+|        oBoB=... |
++----[SHA256]-----+
+Store the public key in your GitHub
+Now that you have generated your SSH key, you need to store it in your GitHub. To do this, you need to go into your .ssh folder. Located at your root, you need to execute the following lines of code:
+
+ls -a
+This will show the hidden files. You should have your .ssh folder. To display your key, you need to follow these steps:
+
+cd .ssh
+ls
+cat id_rsa.pub
+id_rsa.pub is your public key, copy it.
+
+Now that you have copied your key, go to your GitHub settings. You should find a section named _SSH and GPG keys_. Click on it and then click on _New SSH Key_. Here, fill in the following parameters:
+
+Title: the name you want to give to your key
+
+Key : Paste the public key
+
+Then, save your key.
+
+Clone the desired repository
+Now that you have generated your key, you can clone the private repository you want. To do so, enter on your terminal :
+
+git clone git@github.com:username/repository_to_clone.git
+Make sure you are in your root and not in the .ssh folder.
+c) Add / Commit / Push
+Now that our repository is instantiated, we will try to feed it. Let's proceed in stages.
+
+First, we will feed our local repository. For the moment, we will stay on the main branch of our repository.
+
+In your local repository, create a new file file1.txt in which you will write a sentence of your choice such as 'This is my first file'.
+
+# We are in the right folder
+cd my-repo
+
+# We create our first file
+nano file1.txt
+So we have added a file to our local repository, but it has not appeared on our remote repository yet. Let's see the status of our repository using git status.
+
+The function returns the following message :
+
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+
+  file1.txt
+
+nothing added to commit but untracked files are present (use "git add" to track)
+Our file is said to be untracked and appears in red in the message, we have to add it with the git add function.
+
+To add it to the list of changes to be saved, we use the git add function.
+
+Add the file file_1.txt to the list of files to be considered in the next commit, then display the status of our repository again.
+
+# Adding the file
+git add file1
+
+# Status of the repository
+git status
+This time, our file is no longer untracked, so we can move on to the commit to record the change made.
+
+To add a message, simply add the -m argument to the git commit function. For example :
+
+git commit -m 'Adding file1'
+Save the changes you have made to the repository by clearly and concisely stating them in the message accompanying your commit.
+
+After each action, it is natural to check the status of our repository, again let's analyze what git status returns.
+
+git status
+------
+On branch main
+Your branch is ahead of 'origin/main' by 1 commit.
+  (use "git push" to publish your local commits)
+
+nothing to commit, working tree clean
+The change has been saved, we just need to "push" them to the remote repository.
+
+As long as we do not push our changes to the remote server, it is always possible to undo or revert to a previous commit. To trace the history of our commits on the main branch, we can use the git log command, it will return all the commits, along with their IDs and associated messages.
+
+To return to a given commit, we use the git reset function.
+
+To communicate our changes to the remote repository, the command to perform is git push as mentioned in the message obtained after the git status.
+
+Push the changes made on the local repository to your remote repository.
+
+Verify that the changes have been applied by going to the GitHub web page for your repository.
+
+# On the directory of the repository
+git push
+Refreshing the GitHub web page of our repository, the file file1.txt has been added.
+
+d) Fetch / Pull
+In a collaborative project, it is to be expected that other participants will make changes and incorporate them into the remote repository. As a result, the local repository being worked on is bound to get out of sync with the changes made by others. To fetch these changes, we use the git fetch and git pull commands.
+
+As in the previous section, fetching changes from the remote repository is a two-step process :
+
+As in the previous section, retrieving changes from the remote repository is a two-step process:
+
+Check for changes to the remote repository using the git fetch command.
+This will download the metadata from the repository without actually downloading the changes made. It, therefore, checks whether changes can be imported into the local repository.
+
+Import the changes made on the remote repository to the local repository using the git pull command.
+e) Branches
+From what we have just seen, we quickly realize that to avoid version conflicts between the various participants in a project, each person should be able to work on his or her own branch before thinking of modifying the main branch.
+
+To create a branch, you can do it in two different ways:
+
+From the GitHub website, on the main page of the repository.
+Just click on the drop-down button associated with branches in the top left of the repository.
+
+By default, you will be on the main (or master) branch. With main being the new default branch name, master is the old name.
+
+To create a new branch, you will just have to write the name of your new branch in the dedicated field :
+
+# To create the branch
+git branch name_of_the_branch
+# To be in the branch
+git checkout name_of_the_branch
+Since Git 2.23, git switch branch-name is the recommended alternative for switching branches. git checkout still works but is considered legacy.
+Once this step is done, to synchronize your local repository with the remote repository, simply download the associated metadata with git fetch, then to move to this new branch on the local repository, use the following command :
+
+git push -u origin [name_of_the_branch]
+Where -u is the --set-upstream argument allowing our branch to be traceable, origin defaults to the name of our repository on which we push our changes.
+
+Using the method of your choice, create a new branch in which you add a new text file file_2.txt.
+
+Check that your changes have been synchronized to your remote repository by checking the site once done.
+
+# Creation of the new branch
+git branch a_branch
+
+# We go to the new branch
+git checkout a_branch
+
+# Once done, we push this new branch onto our remote repository
+git push -u origin a_branch
+
+# We create a new file
+nano file2.txt
+
+# We write some lines in this file, then we add them to our next commit
+git add file2.txt
+
+# We make a commit
+git commit -m "adding of file2 to the new branch"
+
+# We push
+git push
+So we have just created a new branch and added a new file to it. When we look at the remote repository page, this file exists in our development branch but does not exist in our main main branch.
+
+Suppose we have made the necessary additions to our branch and now want to share our work with the other collaborators, we need to switch the changes to our branch to the main repository branch. This is done by merging our development branch with our main branch.
+
+Before doing the merge it might be interesting to look at the differences between the branches, for this, we can use the git diff command which is used as follows :
+
+git diff [name_of_branch1] [name_of_branch2]
+This command will list all the files, folders, and other changes that differ between the two branches. Once you have ensured that these changes are the correct ones, you can proceed to merge the branches using the git merge function from the main branch which will be receiving the merge. The function is used as follows :
+
+git merge [name_of_the_branch_to_merge]
+Using the git checkout function, move to the main branch.
+
+From there, merge your main branch with your development branch.
+
+# We go to the main branch
+git checkout main
+
+# We merge the two branches
+git merge a_branch
+Once done, just push the changes to the remote repository using git push and our main branch will be up to date. The development branch is now obsolete, we can delete it locally with the following command :
+
+git branch -D [name_of_the_branch]
+Note: The -d flag (lowercase) is the safe option: it refuses to delete a branch that has not been fully merged into its upstream branch. The -D flag (uppercase) is a shortcut for --delete --force and will delete the branch even if it contains unmerged changes. Use -d by default to avoid accidental data loss.
+To delete it on the remote repository, you will need to go to your repository site, click on branch, and delete the obsolete branch.
+
+Up to now, the working methods presented remain textbook cases and do not quite reflect the typical workflow that one might encounter when participating in a cooperative project on GitHub. Indeed, merging a development branch into the main branch is not so simple, especially when it is a change-sensitive work, additions, and changes must always be reviewed by a designated administrator.
+
+In a github repository, you can customize access to your organization by attribute rights to contributors. Here is a summary of the different rights:
+
+Read : Use for contributors only to view the project.
+Write : Use for contributors who pull often.
+Triage : Use for contributors who manage issues and pull requests.
+Maintain : Use for contributors who need to manage the repository without access to sensitive actions.
+Admin : Use for contributors who need full rights access to the repository.
+f) Pull Requests
+GitHub offers a Pull Request (PR) system for monitoring branch merges. In most cases, one person in the organization will be designated to monitor and authorize branch merges to the main project branch. The purpose of this tool is to limit merge conflicts or change conflicts, which can occur when two actors in a project make parallel changes to common parts of the project on two different branches. In such a situation, the actors will submit a Pull Request to the project administrator and the project administrator will be responsible for making the necessary changes to resolve the conflicts to allow the _merge_ of the branches.
+
+To test the pull request system, create a new branch in your repository and add any file to it that is not already on the main branch or modify an existing file.
+
+# Creation of the new branch
+git branch a_new_branch
+
+# We go to the new branch
+git checkout a_new_branch
+
+# Once done, we push this new branch onto our remote repository
+git push -u origin a_new_branch
+
+# We create a new file
+nano file3.txt
+
+# We fill the file then we add it to our next commit
+git add file3.txt
+
+# We make a commit
+git commit -m "adding file3 to the new branch"
+
+# We push our changes
+git push
+Once this step is done, go to the main page of your repository and go to the Pull Request tab. Submit a new pull request with the "_New pull request_" button, describe the content of your changes in the space provided. You can also assign a reviewer, and a label to further describe your changes.
+
+On the admin side, the admin can see what files have been added, modified, or deleted, make his or her own changes to those same files, and finally, authorize the merge of the branch. GitHub automatically notifies the administrator of the ability to merge branches. If not, the administrator will also be notified of a merge conflict that must be resolved by modifying the files that are causing the problem.
+
+Finally, if no problem is detected by GitHub and the administrator, the administrator can authorize the pull request and a new commit will be created as described in the paragraph introducing the merge. GitHub will suggest deleting the now outdated branch, locally we will just pull the changes made to the main branch, then delete the local branch which has also become outdated.
+
+g) Fork
+Another way to participate in a project is to fork it. In short, this means copying the entirety of a GitHub repository created by someone else and making it one of your personal repositories, cloning it, modifying it... as if it were your own. This way, you can work on it without modifying the repository's own architecture, try out your changes on your own, and once you are happy with them, and you think they will contribute to the original project, you can submit a pull request.
+
+This is one of the ways that open-source projects find contributors: anyone can fork the public repository of an open-source project, try to improve it, and propose those changes via a pull request. These changes will then be reviewed by the administrators of the open-source project, and accepted or rejected. The administrator can also discuss with the contributor via the pull request, in particular, to ask him to improve his modifications before he integrates them (update the documentation, add tests, comments, etc.).
+
+To fork a repository, click on the eponymous button located at the top right of the repository.
+
+Fork
+From then on, as if it were your repository, you can clone it and perform all the actions that you think would be positive for the development of the project.
+
+To try this, fork the test repository Spoon-Knife, make changes to it, and submit a pull request to the original repository.
+
+After forking the repository, you can also create a pull request to the original repository. You will see that you can add a description to your pull request to specify the changes you have made, and discuss your changes directly on the Pull Request with the administrators and other contributors to the project :
+
+Pull Request
+h) Issues
+You can also create "issues" on one of your repositories, or a public repository of an open-source project. An issue can be used to :
+
+report a bug
+ask for a feature to be added
+simply ask a question about the project
+For each issue, you can use labels to best describe it.
+
+bug: unexpected problem.
+
+documentation: needs documentation.
+
+duplicate: similar issues, pull requests or discussions.
+
+enhancement: new feature requests.
+
+good first issue: test issue for new contributor.
+
+help wanted: need help on a pull request.
+
+invalid: issue, pull request no long relevant.
+
+question: more information on an issue
+
+For example, here is a screenshot of the FastAPI GitHub repository issues :
+
+Issues
+Conclusion
+Github is not easy to understand at the first sight because you have to understand some hard concepts. With this notebook you have now on your range of skills a great variety of Git commands. You can now create your on repository, work on it, create new branches for each part of your work then push and update your repository on Github. In the next session, you will have a better view of Workflows and Processes to improve your management skills of a repository Github.
