@@ -13,4 +13,5 @@ jobs:
         run: |
           python3 -V
           touch my_file_with_workflow.py
+          pwd
           ls -l
