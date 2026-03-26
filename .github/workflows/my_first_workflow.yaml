@@ -14,5 +14,5 @@ jobs:
           python3 -V
           touch my_file_with_workflow.py
           pwd
-          echo hostname
+          echo $HOSTNAME
           ls -l
