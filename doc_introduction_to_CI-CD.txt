@@ -1,0 +1,290 @@
+Leçon
+4. Introduction to CI/CD
+a) Introduction
+_Context_
+In a typical Machine Learning project, the final implemented solution should provide automated training and implementation of the selected models. But what about integration and deploying the previously mentioned models?
+
+This is where CI/CD comes into play: This continuous integration / continuous deploying solution provides an end-to-end pipeline that completes the cycle of a full project and ensures the model performances.
+
+Initially, Continuous Integration and Deployment is a DevOps technique to implement an automated pipeline for production's sake by:
+
+streamlining (rationalization)
+testing
+deploying/ production
+The DevOps field corresponds to a collection of processes that tries to reduce the development life cycle of a system by enabling the continuous delivery of high-quality software.
+
+MLOps, on the other hand, is the process of automating and industrializing machine learning applications and workflows. CI/CD represents here an automation workflow of the ML pipeline through the following operations:
+
+building the model
+testing
+deploying
+This also prevents the data scientist to take care and worry about this process, by ensuring no human negligence and constant improvement of the model efficiency by permanent monitoring of the ML model. Any change in the model construction is thus eased and its development automated with reliable delivery.
+
+As the CI/CD workflow will automate the different steps of an ML project, let's do a quick reminder about the typical lifecycle of an ML project.
+
+_Project lifecycle_
+
+Data preparation: In most cases, the data is initially presented in raw form. For this reason, it is necessary to perform a few steps of preprocessing these data sets to make them usable for the modeling step. This step is generally performed by the Data Scientist or sometimes by the Data Analyst and may require the use of tools such as Apache Spark, MySQL or Python, and libraries such as Pandas or Numpy.
+
+Model Training: This step led by the Data Scientist is the main focus of the project life cycle: the purpose of the model implementation is to respond to a specific problem by designing and setting the appropriate algorithm. This iteration usually requires the import of tools such as TensorFlow, PyTorch frameworks, or the library Scikit-Learn.
+
+Model Deploying: Once the model is ready, the Machine Learning Engineer or the Data Engineer is intended to make it available to the customer for easy and convenient use.
+
+New raw data: Although the project may be expected to be coming to an end, very often the Data Engineer receives new raw data available after these steps. They must therefore be integrated into the cycle described above to refine and improve the model performance developed previously.
+
+b) CI/CD concepts
+Each phase of the project lifecycle is associated with at least one process: CI, CD or both. Let's dive into their meaning.
+
+_Continuous Integration_ (CI)
+CI stands for _Continuous Integration_. This practice gathers software engineering concepts around automating the building and testing of the model, version control, and release. By release, we here explicitly mean the action of pushing the code to the corresponding GitHub repository.
+
+_Continuous Delivery_ (CD)
+CD stands for _Continuous Delivery_ or _Continuous deployment_. This concept represents the continuous model deployment, the formatting, and the setup of a production-like environment to allow for automated integration. Regarding the application, the CD stage includes the testing, deployment, and automated configuration of the app.
+
+_CI/CD with a Machine Learning problem_
+Continuous Integration and Deployment (CI/CD) has long been a common practice for the majority of software systems. By offering continuous and automatic training and application of Machine Learning models, machine learning systems may do the same thing.
+
+Machine learning applications that use CI-CD offer a complete pipeline that closes the feedback loop at every level and maintains the performance of ML models. It can also bridge the gap between scientific and engineering processes by removing obstacles between data, modeling, processing, and return.
+
+Hereunder you can see the typical lifecycle management of a machine learning project and the associated CI/CD stages.
+
+Detail of every step of the ML project and its link with CI/CD.
+
+
+A note however regarding the difference between continuous delivery and deployment configurations in a lifecycle: As for both configurations the continuous integration includes building and testing the model, the stage of deploying the model to production is automated continuous deployment whereas manual in continuous delivery setup.
+
+There exist different tools to automate software workflows such as GitHub Actions. You will know more about this in the coming section.
+
+c) Github Actions
+
+In the upcoming module, we will get more into the details.
+
+_What are GitHub actions ?_
+GitHub actions is a tool that lets you automate your software development workflows. GitHub actions is the most common tool used to build CI/CD pipelines.
+
+So let's say you have a GitHub repository and on this repository event can happen, an event like someone pushed a script or a pull request was opened or an issue was created or closed, and so on.
+
+And these things are referred to as events. And we would like to perform a workflow when these events happen.
+
+A workflow can contain one or more jobs and each job runs on its virtual machine.
+
+A virtual machine will be booted up for each job that we have in our workflow and this virtual machine can be a Windows machine or a Linux or a Mac OS. We can define the OS directly in the workflow. For each job, we define a bunch of steps and each step should either act. This step who performs these jobs is known as a Github runner.
+
+In a nutshell, every workflow consists of several different core concepts. These include:
+
+Events : Events are defined triggers that kick off a workflow. They can be set to run on specific coding branches within a given repository on GitHub.
+
+Jobs : Jobs are a set of steps that execute on the same runner. Each runs in its VM and parallel to other jobs.
+
+Steps : Steps are individual tasks that run commands in a job. These can be an action or a shell command. All steps in a job execute on the same runner.
+
+Actions : An action is a command that is executed on a runner and the core element of GitHub Actions, which is named after it.
+
+Runners : A runner is a GitHub Actions server. It listens for available jobs, runs each in parallel, and reports back progress, logs, and results. Each runner can be hosted by GitHub or self-hosted on a localized server. GitHub Hosted runners are based on Ubuntu Linux, Windows, and macOS
+
+Our first workflow
+So now let's create our first GitHub workflow. You will need to use your GitHub account. We will run a workflow on different versions of Ubuntu using a matrix strategy.
+
+To build our very first workflow, please follow these steps:
+
+1 - Create a public Github repository in your Github account named github_actions
+
+2 - Clone your repo on the Datascientest Virtual Machine
+
+git clone https://github.com/your-username/github_actions.git
+3 - Create a folder named .github/workflows
+
+Make sure you are at the root of your cloned repository before running the following commands.
+cd github_actions
+
+mkdir .github/workflows
+
+cd .github/workflows
+4 - Create a workflow file my_first_workflow.yaml
+
+nano my_first_workflow.yml
+Put these lines inside of the new file:
+
+A matrix strategy allows you to automatically run the same job across multiple configurations (e.g., different OS versions, language versions, etc.). GitHub Actions will create one job instance for each combination defined in the matrix.
+name: Shell commands
+on: [push]
+jobs:
+  run-shell-command:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04]
+    steps:
+      - name: echo a string
+        run: echo "Hello world"
+      - name: multiline script
+        run: |
+          python3 -V
+          touch my_file_with_workflow.py
+          ls -l
+This workflow defines 1 job (run-shell-command) with 2 steps. Thanks to the matrix strategy, this job will run on 2 different OS versions (ubuntu-latest and ubuntu-24.04), resulting in 2 job instances in total.
+
+Step 1 :
+
+Print a "hello world" in the console
+Step 2 :
+
+Print Python version, the version available by default inside Ubuntu
+
+Create a file named my_file_with_workflow.py
+
+List files inside the current folder
+
+5 - Commit and push your repository, write my first action as a comment
+
+In order to connect your Virtual Machine with your github account, you may create an access token instead of password. Password connection mode is no longer supported.
+Please follow these steps at this point : create access token
+
+6 - Go to your Github account in the actions tab
+
+
+7 - Once you are in the action tab, click on your workflow
+
+
+8 - Once the workflow has finished, download logs and see what happens
+
+You can activate mail or push notifications if a run success or fail:
+
+Go to your account settings
+
+Go to the notification section and search for the Actions part
+
+You will see Notifications for workflow runs on repositories set up with GitHub Actions
+
+Check the box Send notifications for failed workflows only
+
+In a test environment, you might want to have a debug mode to see how your workflow works and modify it in consequence.
+
+You can activate the debug mode in your repository.
+
+9 - In the repository on Github, click on "Settings". Once you are on the settings tab, click on "new repositories secret".
+
+10 - Add the following configuration in the form :
+
+
+NAME: ACTIONS_RUNNER_DEBUG
+
+KEY: true
+
+Click on "Add secret"
+
+Do the same with :
+
+NAME: ACTIONS_STEP_DEBUG
+
+KEY: true
+
+Now to try the configuration, modify your workflow file my_first_workflow.yaml in your Virtual Machine.
+
+Replace:
+
+run: echo "Hello world"
+With:
+
+run: echoo "Hello world"
+This line will generate an error. You will see the debug on the github actions tab during the execution of your workflow.
+
+Do not forget to commit and push on Github.
+11 - Download logs archives to see where the error was raised.
+
+You have just created your first workflow and jobs ! In these steps, we just ran some shell commands. You can change what shell are you using as well.
+
+Here you have a table for all the supported shells in GitHub actions and also which platforms they support :
+
+
+Supported platform	shell parameter	Description	Command run internally
+All	bash	The default shell on non-Windows platforms with a fallback to sh. When specifying a bash shell on Windows, the bash shell included with Git for Windows is used.	bash --noprofile --norc -eo pipefail {0}
+All	pwsh	The PowerShell Core. GitHub appends the extension .ps1 to your script name.	pwsh -command ". '{0}'"
+All	python	Executes the python command.	python {0}
+Linux / macOS	sh	The fallback behavior for non-Windows platforms if no shell is provided and bash is not found in the path.	sh -e {0}
+Windows	cmd	GitHub appends the extension .cmd to your script name and substitutes for {0}.	%ComSpec% /D /E:ON /V:OFF /S /C "CALL "{0}"".
+Windows	pwsh	This is the default shell used on Windows. The PowerShell Core. GitHub appends the extension .ps1 to your script name. If your self-hosted Windows runner does not have PowerShell Core installed, then PowerShell Desktop is used instead.	pwsh -command ". '{0}'".
+Windows	powershell	The PowerShell Desktop. GitHub appends the extension .ps1 to your script name.	powershell -command ". '{0}'".
+So there is bash which is the default in Linux and Mac OS virtual machines and it supports all platforms. It can also be used in Windows, however, in Windows, the default is the powershell.
+
+  The legacy powershell (Windows PowerShell) only works on Windows. However, pwsh (PowerShell Core) is cross-platform and can be used on Windows, Linux, and macOS virtual machines. You can also use bash on a Windows virtual machine. In addition to that, you also have other shells like python.
+Let's now try to use another shell in our Ubuntu job here and build a more complex example.
+
+1 - Create a new workflow in your machine called multiple_shells.yaml and copy these lines inside:
+
+name: Multiple shells commands
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+    types: [closed, assigned, opened, reopened]
+jobs:
+  run-shell-command:
+    runs-on: ubuntu-latest
+    steps:
+      - name: python commands
+        run: |
+          import platform
+          print(platform.processor())
+        shell: python
+  run-windows-command:
+    runs-on: windows-latest
+    needs: ["run-shell-command"]
+    steps:
+      - name: current directory with powershell
+        run: Get-Location
+      - name: current directory with bash
+        run: pwd
+        shell: bash
+      - name: print some default env variables
+        run: |
+          echo "HOME: ${HOME}"
+          echo "GITHUB_WORKFLOW: ${GITHUB_WORKFLOW}"
+          echo "GITHUB_ACTION: ${GITHUB_ACTION}"
+          echo "GITHUB_ACTIONS: ${GITHUB_ACTIONS}"
+          echo "GITHUB_ACTOR: ${GITHUB_ACTOR}"
+          echo "GITHUB_REPOSITORY: ${GITHUB_REPOSITORY}"
+          echo "GITHUB_EVENT_NAME: ${GITHUB_EVENT_NAME}"
+          echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
+        shell: bash
+2 - Commit and push the new file on Github
+
+3 - You should see 2 jobs running inside the action tab
+
+4 - Click on the run-windows-command workflow and explore different steps. You will see all printed variables in the print some default env variables step.
+
+
+_Some explanations :_
+The needs key is useful in case you want to run jobs "sequentially". The next job will only run when the previous one finishes successfully.
+
+You can trigger an event and on which branch your workflow should run. Here we define "If I push a commit in the main branch, run the workflow". We also want to run our workflow depending on the status of a pull request e.g. "if I ask for a pull request and merge the branch, test the code before merging to the main branch" Check the documentation to see all events that trigger a workflow
+
+In Github actions you have default environment variables which you can use to perform jobs:
+
+HOME which is our home directory in our virtual machine. And this is created by GitHub actions. it cannot be changed
+
+GITHUB_WORKFLOW which is the name of the workflow.
+
+GITHUB_ACTION which is a unique identifier for the current step running. So since you only have one step running in this job, it's called run.
+
+GITHUB_ACTIONS which will always be true if you're running a GitHub workflow. This can be useful if you are running some tests in your code and you need to check if you are running these tests on CI on GitHub actions or locally on your machine you can check for this environment variable.
+
+GITHUB_ACTOR which is the user name of the GitHub account and GITHUB_REPOSITORY which is the username /repository name.
+
+GITHUB_EVENT_NAME which is the event that triggered this workflow to run. In our case it was a push, it could be a pull request for example.
+
+GITHUB_WORKSPACE is the path that will have your repository files
+
+GITHUB_SHA which is the commit id of the commit that triggered that workflow to run. We have the branch that triggered the workflow to run. In this case, you pushed to main
+
+All these variables are the most used but this list is not exhaustive. Check the documentation to see all default environment variables available for Github Actions.
+
+You can also define custom environment variables to authenticate and commit changes to your repositories inside the runner. You will see all steps inside the next module.
+
+Conclusion
+CI/CD pipelines are typically complex and have a lot of tools that range from testing applications to integration in production. You can simplify the process with Docker integrations which allows you to specify which version of Python you want to use and then connect your code to a target environment and application platform.
+
+You have seen how to create a workflow and some jobs inside of this workflow and also how to create steps inside of each job. But we have only seen how to run some shell command in a step which could be very useful, however, we can use actions in our workflow to do a lot more stuff.
+
+You will go deeper into Actions concepts and practices in the next notebook.
