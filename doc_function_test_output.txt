@@ -1,0 +1,196 @@
+Function test the output of 2+4
+5. Github Events & Actions step by step
+
+In this section, we are going to build an Action that runs some tests with pytest and controls the quality of your code with Flake8 when you push on your repository.
+
+The pytest framework makes it easy to write small, readable tests and can scale to support complex functional testing for applications and libraries.
+
+Flake8 is a Python library that wraps PyFlakes, pycodestyle, and Ned Batchelder’s McCabe script. It is a great toolkit for checking your code base against coding style (PEP8), programming errors (like “library imported but unused” and “Undefined name”), and to check cyclomatic complexity.
+
+_First Step_
+First of all, you have to create a python script that contains functions with asserts to test. Pytest will scan all the functions inside your scripts but there is one condition: the name of your functions have to begin with 'test\_'
+
+So let's create this script name file_test.py
+
+import pytest
+
+def test_calc_addition():
+    output = 2+4
+    assert output == 6
+
+def test_calc_substraction():
+  # Function test the output of 2-4
+    output = 2-4
+    assert output == -2
+
+def test_calc_multiply():
+  # Function test the output of 2*4
+    output = 2*4
+    assert output == 8
+
+def test_coucou():
+  # Function test if the output return 'hello'
+    output='hello'
+    assert output == 'hello'
+_Make our Action_
+Now we have our file of tests, let's create our workflow. Go inside your folder containing your repository, create a secret folder named .github and a subfolder named workflows, and create your file.
+
+Create control_tests.yaml give a name to our workflow, and set the action on push
+
+name: Pytest & flake8 control Push
+on: push
+Define a job id, name it and let's define on which instance we want to run it.
+
+jobs:
+  qa:
+    name: Check tests
+    runs-on: ubuntu-24.04
+Now, let's configure our steps. We have 5 steps:
+
+A checkout to the repo
+Set up Python on the VM
+The packages installation
+The run of our tests
+The control of the Pep8 convention
+steps:
+  - name: Checkout repository
+    uses: actions/checkout@v4
+
+  - name: Set up Python
+    uses: actions/setup-python@v5
+    with:
+      python-version: "3.x"
+In the first step, we have the keyword uses which calls a reusable workflow already existent on github. Then we set up Python on the instance with another workflow that already exists. and we specify the Python version with the keyword with
+
+In the following steps, we are going to install two packages and run pytest and flake8
+
+- name: Install pytest and flake8
+  run: |
+    pip install pytest
+    pip install flake8
+
+- name: Run tests
+  run: |
+    pytest
+
+- name: Run flake8
+  uses: py-actions/flake8@v2
+With the keyword run, you just run this command in a shell Ubuntu on the instance. To use flake8, you have to use a workflow already existing on the github marketplace.
+
+Here is your final workflow:
+
+name: Control Push
+on: push
+jobs:
+  qa:
+    name: Check tests
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install pytest and flake8
+        run: |
+          pip install pytest
+          pip install flake8
+
+      - name: Run tests
+        run: |
+          pytest
+
+      - name: Run flake8
+        uses: py-actions/flake8@v2
+Now, you just have to commit and push your code on your repo.
+
+Go to your repo on www.github.com, click on the action tab, then you can see how your workflow is running.
+
+
+You can see that our workflow returns an error. Click on your action.
+
+
+Now click on check tests and then you'll see why our action failed.
+
+
+We can observe the tests passed but the flake8 step failed. If you take a closer look at our script, we do not have the Pep8 code convention. You can correct this by refactoring your code and paying attention to the error messages.
+
+In this example, inside the script of workflow, you may notice we have a uses line containing actions/checkout@v4. Github Marketplace contains tools that add functionality. In our example we used an action called checkout which allows us to copy our repository to the remote server where the workflow is running so that the job can have access to our files. You can build your action and publish it on the marketplace.
+
+_Environment variable_
+Let's introduce a concept very useful in github action called Environment Variable. An environment variable is a variable whose value is set outside the program and can be used to determine information specific to your computer. You can set an environment variable for the entire workflow by using it at the top level of the workflow file, only for a specific job or just for a step inside a job.
+
+Here is a good example to illustrate it:
+
+name: Greeting on a variable day
+
+on: workflow_dispatch
+
+env:
+  DAY_OF_WEEK: Monday ## Environment variable for the entire workflow
+
+jobs:
+  greeting_job:
+    runs-on: ubuntu-latest
+    env:
+      Greeting: Hello ## Environment variable for the job
+    steps:
+      - name: "Say Hello Mona it's Monday"
+        run: echo "$Greeting $First_Name. Today is $DAY_OF_WEEK!"
+        env:
+          First_Name: Mona ## Environment variable only for the step "Say Hello Mona it's Monday" of the job "greeting_job"
+The example above shows three custom environment variables being used in an echo command: $DAY_OF_WEEK, $Greeting, and $First_Name.
+
+There is another way to set environments variable more securely. If you do not want to show some confidential information, you can use github secret to not display it inside the code. It can be very useful for database credentials or API credentials for example. To create secrets you must be the repository owner.
+
+On GitHub.com, navigate to the main page of the repository.
+
+Under your repository name, click Settings.
+
+Repository settings button.
+
+In the left sidebar, click Environments.
+
+Click on the environment to that you want to add a secret.
+
+Under Environment secrets, click Add secret.
+
+Type a name for your secret in the Name input box.
+
+Enter the value for your secret.
+
+Click Add secret.
+
+Here is another example :
+
+create_commit:
+  runs-on: ubuntu-latest
+  permissions:
+    contents: write
+  steps:
+    - name: Push a file to our repository
+      run: |
+        pwd
+        ls -a 
+        git init
+        git remote add origin "https://$GITHUB_ACTOR:${{ secrets.GITHUB_TOKEN }}@github.com/$GITHUB_REPOSITORY.git" 
+        git config --global user.email "my-bot@bot.com"
+        git config --global user.name "my-bot"
+        git fetch
+        git checkout main
+        git branch --set-upstream-to=origin/main
+        git pull
+        pytest >> log_pytest.txt
+        ls -a
+        git add .
+        git commit -m "random file from action"
+        git push
+In this code, we want to push a file on our remote repository github. Some operation like push or pull requires your credentials like your username or your password. Github removed the password to replace it with a personal access token for a limited time or not. The token can be called and used as an environment variable called in our script: GITHUB_TOKEN. In this action, we have 2 environment variables named GITHUB_ACTOR and GITHUB_REPOSITORY too.
+
+This action initializes a git repository inside the Virtual Machine, set the credentials of the account, connects to your remote repository, pulls the content then executes pytest and stores the logs inside a file named log_pytest.txt. Then we commit this file and we push to the repository.
+
+_Conclusion_
+In this module you learned the concepts of Git and Github with a great overview repository creation and management with the rights allocation and the understanding of the workflow and processes. Then you had an introduction to CI/CD concepts and how to apply it with some full examples of github action.
